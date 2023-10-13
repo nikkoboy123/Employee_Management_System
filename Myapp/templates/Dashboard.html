@@ -1,0 +1,125 @@
+{% extends "Homepage.html" %}
+{% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script type="text/javascript">
+    function Edit(id,ename,email,dob,gender,education,password)
+        {
+            document.getElementById("id").value = id;
+            document.getElementById("ename").value = ename;
+            document.getElementById("email").value = email;
+            document.getElementById("dob").value = dob;
+            document.getElementById("education").value = education;
+            document.getElementById("pass").value = password ;
+            if(gender == 'male')
+                {document.getElementById("gender_Male").checked = true;}
+            else
+                {document.getElementById('gender_female').checked = true;}
+            // var x = document.getElementById("pass");
+            // if (document.getElementById("pass").type == "password") {
+            //     x.type = "text";}
+        }
+        
+    function Remove(myid)
+        {
+            result = confirm('Are you sure about Delete for this Record')
+            if(result)
+            {
+                myform = document.getElementById(myid);
+                myform.action = '/Remove'
+                myform.submit()
+            }
+        }
+    function visible()
+    {
+        var x = document.getElementById("pass");
+        if (document.getElementById("pass").type == "password") {
+        x.type = "text";}
+        else{
+            x.type = "password"
+        }
+    }
+</script>
+<div class="container">
+    <div>
+<table class="table">
+    <h1 align="center">Employee Details</h1>
+    <tr>
+        <th>SrNo.</th><th>Emp. Name</th><th>Email</th><th>Birth date</th><th>Gender</th><th>Education</th><th>Password</th><th>Action</th>
+    </tr>
+    {%for emp in data%}
+    <form id="myform{{emp.id}}">
+    <tr><td>{{forloop.counter}}</td><td><input type="hidden" name="empid" value="{{emp.id}}">{{emp.ename}}</td><td>{{emp.email}}</td><td>{{emp.Birth_date}}</td><td>{{emp.gender}}</td><td>{{emp.education}}</td><td>{{emp.password}}</td>
+           
+        <td><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#myModal" onclick="Edit('{{emp.id}}','{{emp.ename}}','{{emp.email}}','{{emp.Birth_date}}','{{emp.gender}}','{{emp.education}}','{{emp.password}}')">Edit</button> 
+            <button class="btn btn-danger btn-sm" onclick="Remove('myform{{emp.id}}')">Remove</button></td></tr>
+        </form>
+        {%endfor%}  
+</table>
+        <a class="btn btn-success" href="\">Add New</a>
+        {%if 'email' in request.session%}
+        <a href="/Logout" class="btn btn-dark">Logout</a>{%endif%}
+    </div>
+      <!-- The Modal -->
+      <div class="modal" id="myModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+      
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Edit Page</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+      
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form method="post" action="/edit/">
+                    {%csrf_token%}
+                <table class="table">
+                    <tr>
+                        <td>Enter Emoloyee name</td>
+                        <span><input type="hidden" name="empid" id="id"></span>
+                        <td><input type="text" name="ename" id="ename" required></td>
+                    </tr>
+                    <tr>
+                        <td>Enter Email Id</td>
+                        <td><input type="email" name="email" id="email" required></td>
+                    </tr>
+                    <tr>
+                        <td>Enter Date of Birth</td>
+                        <td><input type="date" name="dob" id="dob" required></td>
+                    </tr>
+                    <tr>
+                        <td>Enter Education</td>
+                        <td><select name="education" id="education" class="form-control form-control-sm " required>
+                            <!--<option value="" >Select</option>-->
+                            <option disabled>Select</option>
+                            <option >BE</option>
+                            <option >Btech</option>
+                            <option >Bsc</option>
+                            <option >Bcom.</option>
+                            </optgroup>
+                        </select></td>
+                    </tr>
+    
+                    <tr>
+                        <td>Gender</td>
+                        <td><input type="radio" name="gender" id="gender_Male" value="male" >Male <br>
+                        <input type="radio" name="gender" id ="gender_female" value="female" >Female</td>
+                       
+                    </tr>
+                    <tr>
+                        <td>Enter Password</td>
+                        <td><input type="password" name="password" id="pass" required>
+                            <span class="glyphicon glyphicon-eye-open" onclick="visible()"></span></td>
+                    </tr>
+                    <tr><td colspan="2" align="center"><input type="submit" class="btn btn-success" value="Edit"></td></tr>
+                </table>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{%endblock%}
+
+</html>
